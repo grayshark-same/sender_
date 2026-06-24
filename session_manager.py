@@ -93,8 +93,14 @@ async def send_to_chat(
             for row in buttons
         ]
 
-    # Числовые ID передаём как int, юзернеймы — как строку
-    peer = int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id
+    from telethon.tl.types import PeerChannel
+    # Числовые ID: -1001234567890 -> PeerChannel(1234567890)
+    if chat_id.lstrip("-").isdigit():
+        raw_id = int(chat_id)
+        channel_id = abs(raw_id) - 1000000000000 if abs(raw_id) > 1000000000000 else abs(raw_id)
+        peer = await client.get_entity(PeerChannel(channel_id))
+    else:
+        peer = chat_id
 
     if photo_path:
         await client.send_file(
