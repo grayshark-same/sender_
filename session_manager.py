@@ -93,12 +93,20 @@ async def send_to_chat(
             for row in buttons
         ]
 
-    from telethon.tl.types import PeerChannel
-    # Числовые ID: -1001234567890 -> PeerChannel(1234567890)
     if chat_id.lstrip("-").isdigit():
         raw_id = int(chat_id)
-        channel_id = abs(raw_id) - 1000000000000 if abs(raw_id) > 1000000000000 else abs(raw_id)
-        peer = await client.get_entity(PeerChannel(channel_id))
+        # Сначала пробуем кэш сессии
+        try:
+            peer = await client.get_entity(raw_id)
+        except (ValueError, IndexError):
+            # Кэша нет — ищем в диалогах
+            peer = None
+            async for dialog in client.iter_dialogs(limit=500):
+                if dialog.id == raw_id:
+                    peer = dialog.entity
+                    break
+            if peer is None:
+                raise ValueError(f"Чат {chat_id} не найден в диалогах")
     else:
         peer = chat_id
 
