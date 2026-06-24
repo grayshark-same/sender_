@@ -63,6 +63,8 @@ async def cb_broadcast_start(callback: CallbackQuery):
             )
             ok += 1
         except Exception as e:
+            import traceback, logging
+            logging.error("Broadcast error for %s: %s", title, traceback.format_exc())
             fail += 1
             errors.append(f"• {title}: {e}")
 
