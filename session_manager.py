@@ -95,18 +95,16 @@ async def send_to_chat(
 
     if chat_id.lstrip("-").isdigit():
         raw_id = int(chat_id)
-        # Сначала пробуем кэш сессии
         try:
             peer = await client.get_entity(raw_id)
         except (ValueError, IndexError):
-            # Кэша нет — ищем в диалогах
             peer = None
             async for dialog in client.iter_dialogs(limit=500):
                 if dialog.id == raw_id:
                     peer = dialog.entity
                     break
             if peer is None:
-                raise ValueError(f"Чат {chat_id} не найден в диалогах")
+                raise ValueError(f"Аккаунт не состоит в группе {chat_id} — добавьте её через поиск групп")
     else:
         peer = chat_id
 
