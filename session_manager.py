@@ -93,13 +93,16 @@ async def send_to_chat(
             for row in buttons
         ]
 
+    # Числовые ID передаём как int, юзернеймы — как строку
+    peer = int(chat_id) if chat_id.lstrip("-").isdigit() else chat_id
+
     if photo_path:
         await client.send_file(
-            chat_id, photo_path,
+            peer, photo_path,
             caption=text, parse_mode="html", buttons=tl_buttons,
         )
     else:
         await client.send_message(
-            chat_id, text or "",
+            peer, text or "",
             parse_mode="html", buttons=tl_buttons, link_preview=False,
         )
