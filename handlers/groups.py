@@ -58,7 +58,7 @@ async def receive_chat_shared(message: Message, state: FSMContext):
     chat = message.chat_shared
     user_id = message.from_user.id
     title = chat.title or str(chat.chat_id)
-    chat_id_str = f"@{chat.username}" if chat.username else f"-100{chat.chat_id}"
+    chat_id_str = f"@{chat.username}" if chat.username else f"-100{abs(chat.chat_id)}"
 
     added = await db.add_group(user_id, chat_id_str, title)
     result = f"✅ <b>{title}</b> добавлена." if added else "⚠️ Эта группа уже в списке."
@@ -82,7 +82,7 @@ async def receive_group_id(message: Message, state: FSMContext):
     try:
         entity = await client.get_entity(raw)
         title = getattr(entity, "title", None) or getattr(entity, "first_name", raw)
-        chat_id_str = f"@{entity.username}" if getattr(entity, "username", None) else f"-100{entity.id}"
+        chat_id_str = f"@{entity.username}" if getattr(entity, "username", None) else f"-100{abs(entity.id)}"
         added = await db.add_group(user_id, chat_id_str, title)
         result = f"✅ <b>{title}</b> добавлена." if added else "⚠️ Эта группа уже в списке."
         await message.answer(result, parse_mode="HTML")

@@ -200,7 +200,7 @@ async def _do_search(
                 # Проверяем можно ли писать
                 banned = getattr(ch, "default_banned_rights", None)
                 can_write = not (banned and getattr(banned, "send_messages", False))
-                chat_id = f"@{ch.username}" if ch.username else f"-100{ch.id}"
+                chat_id = f"@{ch.username}" if ch.username else f"-100{abs(ch.id)}"
                 groups.append({
                     "title": ch.title,
                     "chat_id": chat_id,
@@ -233,7 +233,7 @@ async def _do_search(
         else:
             results = []
             for ch in chats:
-                chat_id = f"@{ch.username}" if ch.username else f"-100{ch.id}"
+                chat_id = f"@{ch.username}" if ch.username else f"-100{abs(ch.id)}"
                 results.append({"title": ch.title, "chat_id": chat_id})
 
             await state.update_data(results=results, selected=[])
