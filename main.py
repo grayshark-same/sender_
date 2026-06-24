@@ -8,9 +8,11 @@ from database import init_db
 from handlers import auth, menu, groups, compose, broadcast, admin, search, telemetr
 
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
 )
+logging.getLogger("telethon").setLevel(logging.WARNING)
+logging.getLogger("aiogram").setLevel(logging.WARNING)
 
 
 async def main():

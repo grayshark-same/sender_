@@ -93,6 +93,8 @@ async def send_to_chat(
             for row in buttons
         ]
 
+    import logging
+    chat_id = chat_id.strip()
     if chat_id.lstrip("-").isdigit():
         raw_id = int(chat_id)
         try:
@@ -100,11 +102,12 @@ async def send_to_chat(
         except Exception:
             peer = None
             async for dialog in client.iter_dialogs(limit=500):
+                logging.debug("dialog.id=%s raw_id=%s", dialog.id, raw_id)
                 if dialog.id == raw_id:
                     peer = dialog.entity
                     break
             if peer is None:
-                raise ValueError(f"Аккаунт не состоит в группе {chat_id} — добавьте через поиск групп")
+                raise ValueError(f"Аккаунт не состоит в группе {chat_id} — вступите через поиск групп")
     else:
         peer = chat_id
 
