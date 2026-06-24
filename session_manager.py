@@ -97,14 +97,14 @@ async def send_to_chat(
         raw_id = int(chat_id)
         try:
             peer = await client.get_entity(raw_id)
-        except (ValueError, IndexError):
+        except Exception:
             peer = None
             async for dialog in client.iter_dialogs(limit=500):
                 if dialog.id == raw_id:
                     peer = dialog.entity
                     break
             if peer is None:
-                raise ValueError(f"Аккаунт не состоит в группе {chat_id} — добавьте её через поиск групп")
+                raise ValueError(f"Аккаунт не состоит в группе {chat_id} — добавьте через поиск групп")
     else:
         peer = chat_id
 
